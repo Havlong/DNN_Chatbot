@@ -1,23 +1,21 @@
 from random import choice
+from re import sub as replace_all
 
-import telebot
 import numpy as np
+import telebot
 
 import model_manager
 import nlp_cleaner
 
 ERROR_THRESHOLD = 0.1
-
 bot = telebot.TeleBot('i_wont_give_you_my_token', parse_mode='MarkdownV2')
 
 if __name__ == '__main__':
-    print('Loading the model...')
+    print('Loading the model...', flush=True)
     model = model_manager.load_model('main_model')
-    print('Reading responses...')
+    print('Reading responses...', flush=True)
     intents = model_manager.load_intents()
     usable_tokens, classes = model_manager.prepare_predict_data()
-    print('Start long-polling...')
-    bot.infinity_polling()
 
 
 def predict_class(message):
@@ -49,18 +47,18 @@ def get_response(predicted_tag):
         if intent['tag'] == tag:
             return choice(intent['responses'])
 
-    return "||Я не понял!||"
+    return "||Я не понял\\!||"
 
 
 welcome_text = """
-***Привет!*** Я очень умный бот, с которым _интересно_ поговорить
-Используй `/help` для того, чтобы узнать, что я могу
+***Привет\\!*** Я очень умный бот, с которым _интересно_ поговорить
+Используй /help для того, чтобы узнать, что я могу
 """
 help_text = """
 Что я умею:
-- Все сообщения, которые ты мне пишешь, я читаю и, используя свои ~бесконечные~ возможности, отвечаю на них
-- Используй `/start` для того, чтобы я мог с тобой общаться
-- Используй `/help` для того, чтобы узнать, что я могу
+\\* Все сообщения, которые ты мне пишешь, я читаю и, используя свои ~бесконечные~ возможности, отвечаю на них
+\\* Используй /start для того, чтобы я мог с тобой общаться
+\\* Используй /help для того, чтобы узнать, что я могу
 """
 
 
@@ -78,5 +76,12 @@ def help_request(message):
 def plain_text(message):
     message_text = message.text
     message_class = predict_class(message_text)
-    message_response = get_response(message_class)
-    bot.reply_to(message, message_response)
+    message_response = get_response(message_class[0])
+
+    message_response = replace_all(r'([_`*[])', r'\\\1', message_response)
+    bot.reply_to(message, message_response, parse_mode="Markdown")
+
+
+if __name__ == '__main__':
+    print('Start long-polling...', flush=True)
+    bot.infinity_polling(allowed_updates=["message"])
