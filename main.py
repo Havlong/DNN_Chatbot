@@ -8,7 +8,7 @@ import nlp_cleaner
 
 ERROR_THRESHOLD = 0.1
 
-bot = telebot.TeleBot('i_wont_give_you_my_token', parse_mode='MARKDOWN')
+bot = telebot.TeleBot('i_wont_give_you_my_token', parse_mode='MarkdownV2')
 
 if __name__ == '__main__':
     model = model_manager.load_model('main_model')
