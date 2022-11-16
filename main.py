@@ -11,9 +11,12 @@ ERROR_THRESHOLD = 0.1
 bot = telebot.TeleBot('i_wont_give_you_my_token', parse_mode='MarkdownV2')
 
 if __name__ == '__main__':
+    print('Loading the model...')
     model = model_manager.load_model('main_model')
+    print('Reading responses...')
     intents = model_manager.load_intents()
     usable_tokens, classes = model_manager.prepare_predict_data()
+    print('Start long-polling...')
     bot.infinity_polling()
 
 
@@ -71,7 +74,7 @@ def help_request(message):
     bot.reply_to(message, help_text)
 
 
-@bot.message_handler(func=lambda x: True)
+@bot.message_handler(content_types=['text'])
 def plain_text(message):
     message_text = message.text
     message_class = predict_class(message_text)
