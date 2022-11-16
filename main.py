@@ -1,12 +1,14 @@
 from random import choice
 
+import telebot
 import numpy as np
 
 import model_manager
 import nlp_cleaner
-from chatbot import bot
 
 ERROR_THRESHOLD = 0.1
+
+bot = telebot.TeleBot('i_wont_give_you_my_token', parse_mode='MARKDOWN')
 
 if __name__ == '__main__':
     model = model_manager.load_model('main_model')
@@ -45,6 +47,28 @@ def get_response(predicted_tag):
             return choice(intent['responses'])
 
     return "||Я не понял!||"
+
+
+welcome_text = """
+***Привет!*** Я очень умный бот, с которым _интересно_ поговорить
+Используй `/help` для того, чтобы узнать, что я могу
+"""
+help_text = """
+Что я умею:
+- Все сообщения, которые ты мне пишешь, я читаю и, используя свои ~~бесконечные~~ возможности, отвечаю на них
+- Используй `/start` для того, чтобы я мог с тобой общаться
+- Используй `/help` для того, чтобы узнать, что я могу
+"""
+
+
+@bot.message_handler(commands=['start'])
+def start_request(message):
+    bot.reply_to(message, welcome_text)
+
+
+@bot.message_handler(commands=['help'])
+def help_request(message):
+    bot.reply_to(message, help_text)
 
 
 @bot.message_handler(func=lambda x: True)
