@@ -1,6 +1,7 @@
 from json import load as read_json_source
 
-from tensorflow.keras.models import load_model as load_keras_model
+from tensorflow.python import keras
+from keras.models import load_model as load_keras_model
 
 import nlp_cleaner
 
