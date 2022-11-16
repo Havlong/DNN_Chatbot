@@ -1,6 +1,7 @@
 from random import shuffle
 
 import numpy as np
+from tensorflow.python import keras
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from keras.optimizers import SGD
