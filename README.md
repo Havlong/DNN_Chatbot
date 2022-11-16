@@ -12,7 +12,12 @@ Libraries used:
 - `TensorFlow Keras`
 - `NLTK`
 
-Be sure to install required libs: ```python3 -m pip install tensorflow nltk pyTelegramBotAPI ```
+Be sure to install required libs:
+
+1. `python3 -m pip install tensorflow nltk pyTelegramBotAPI`
+2. `python3 -m nltk.downloader punkt`
+3. `python3 -m nltk.downloader wordnet`
+4. `python3 -m nltk.downloader omw-1.4`
 
 ## To fit the model
 
