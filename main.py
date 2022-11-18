@@ -46,8 +46,7 @@ def get_response(predicted_tag):
     for intent in intent_list:
         if intent['tag'] == tag:
             return choice(intent['responses'])
-
-    return "||Я не понял\\!||"
+    return None
 
 
 welcome_text = """
@@ -59,6 +58,9 @@ help_text = """
 \\* Все сообщения, которые ты мне пишешь, я читаю и, используя свои ~бесконечные~ возможности, отвечаю на них
 \\* Используй /start для того, чтобы я мог с тобой общаться
 \\* Используй /help для того, чтобы узнать, что я могу
+"""
+class_error_text = """
+||Я не понял\\!||
 """
 
 
@@ -78,8 +80,11 @@ def plain_text(message):
     message_class = predict_class(message_text)
     message_response = get_response(message_class[0])
 
-    message_response = replace_all(r'([_`*[])', r'\\\1', message_response)
-    bot.reply_to(message, message_response, parse_mode="Markdown")
+    if message_response:
+        message_response = replace_all(r'([_`*[])', r'\\\1', message_response)
+        bot.reply_to(message, message_response, parse_mode="Markdown")
+    else:
+        bot.reply_to(message, class_error_text)
 
 
 if __name__ == '__main__':
